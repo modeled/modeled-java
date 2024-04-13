@@ -1,0 +1,50 @@
+package {{{package}}};
+
+import java.util.Optional;
+import java.util.function.Function;
+
+import lombok.NonNull;
+
+import one.util.streamex.StreamEx;
+
+
+public sealed interface {{{class}}}_Model permits {{{class}}} {
+{{#each properties}}{{#if this.isCollection}}
+    @NonNull
+    default public StreamEx<{{{this.type}}}> stream{{capitalizeFirst this.name}}() {
+        return StreamEx.of((({{{class}}})this).{{{this.name}}});
+    }
+{{else}}{{#if this.isNonNull}}
+    @NonNull
+    default public {{{this.type}}} {{{this.name}}}() {
+        return (({{{class}}}) this).{{{this.name}}};
+    }
+{{else}}
+    @NonNull
+    default public Optional<{{{this.type}}}> get{{capitalizeFirst this.name}}() {
+        return Optional.ofNullable((({{{class}}}) this).{{{this.name}}});
+    }
+
+    @NonNull
+    default public {{{this.type}}} require{{capitalizeFirst this.name}}() {
+        return this.get{{capitalizeFirst this.name}}().orElseThrow(() -> new NullPointerException(String
+                .format("@Modeled.Property {{{this.name}}} of %s is required but is null", {{{class}}}.class)));
+    }
+
+    default public boolean has{{capitalizeFirst this.name}}() {
+        return (({{{class}}}) this).{{{this.name}}} != null;
+    }
+
+    @NonNull
+    default public <U> Optional<U> map{{capitalizeFirst this.name}}(@NonNull final Function<{{{this.type}}}, U> mapper) {
+        return this.get{{capitalizeFirst this.name}}().map(mapper);
+    }
+
+    @NonNull
+    default public <U> Optional<U> flatMap{{capitalizeFirst this.name}}(
+            @NonNull final Function<{{{this.type}}}, Optional<U>> mapper) {
+
+        return this.get{{capitalizeFirst this.name}}().flatMap(mapper);
+    }
+{{/if}}{{/if}}{{/each}}
+}

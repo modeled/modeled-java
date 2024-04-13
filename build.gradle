@@ -1,0 +1,73 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+
+    alias libs.plugins.versions
+}
+
+wrapper {
+    gradleVersion = '8.7'
+}
+
+
+group 'me.modeled'
+version '0.1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    gradleApi()
+    localGroovy()
+
+    api libs.streamex
+
+    implementation libs.handlebars
+    implementation libs.javapoet
+    implementation libs.throwing.function
+
+    annotationProcessor libs.auto.service
+    implementation libs.auto.service
+
+    annotationProcessor libs.lombok
+    compileOnly libs.lombok
+}
+
+
+import com.github.benmanes.gradle.versions.reporter.PlainTextReporter
+
+dependencyUpdates {
+    outputFormatter { /** Combining custom with default output was adapted from:
+            https://github.com/ben-manes/gradle-versions-plugin/issues/566#issuecomment-961929993
+        */
+        new PlainTextReporter(project, revision, gradleReleaseChannel).write System.out, it
+
+        final outdated = it.outdated.dependencies.findAll { !(it.name.startsWith 'spock-') }
+        if (outdated != it.outdated.dependencies) {
+            println "\nIgnoring outdated Spock dependencies."
+        }
+
+        if (outdated) {
+            throw new RuntimeException("Outdated dependencies: ${outdated.collect { it.name }}")
+        }
+    }
+}
+
+
+publishing {
+    publications {
+        maven MavenPublication, {
+            from components.java
+        }
+    }
+}
