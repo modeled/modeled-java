@@ -1,4 +1,4 @@
-/** MODELED-Java
+/** MODELED :: Java
 
 Copyright 2024 Stefan Zimmermann <user@zimmermann.co>
 
