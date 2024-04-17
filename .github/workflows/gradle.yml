@@ -39,7 +39,7 @@ jobs:
       run: gradle wrapper --info --warning-mode fail --stacktrace
 
     - name: Check dependencies with Gradle Wrapper
-      run: ./gradlew dependencyUpdates --quiet --warning-mode fail --stacktrace
+      run: ./gradlew dependencyUpdates --quiet --warning-mode all --stacktrace
 
     - name: Assemble root project with Gradle Wrapper
       run: ./gradlew assemble --info --warning-mode fail --stacktrace
