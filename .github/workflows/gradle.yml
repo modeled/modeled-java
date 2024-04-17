@@ -38,7 +38,10 @@ jobs:
     - name: Setup Gradle Wrapper
       run: gradle wrapper --info --warning-mode fail --stacktrace
 
-    - name: Assemble with Gradle Wrapper
+    - name: Check dependencies with Gradle Wrapper
+      run: ./gradlew dependencyUpdates --quiet --warning-mode fail --stacktrace
+
+    - name: Assemble root project with Gradle Wrapper
       run: ./gradlew assemble --info --warning-mode fail --stacktrace
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
@@ -70,3 +73,5 @@ jobs:
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
     - name: Generate and submit dependency graph
       uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+      with:
+        gradle-version: '8.7'
